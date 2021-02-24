@@ -7,5 +7,6 @@
 		"default_popup": "index.html"
 	},
 	"description": "Visual UAT is a Chrome extension designed to help website QA testers run through pre-launch checklists and report bugs",
-	"author": "Kokko Tso"
+	"author": "Kokko Tso",
+	"permissions": ["tabs"]
 }
