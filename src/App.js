@@ -39,21 +39,10 @@ function App() {
 		<div className="App">
 			<header className="App-header">
 				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
 				<button onClick={captureScreen}>Take Screenshot</button>
 				{screenshot && <img alt="screenshot" src={screenshot} />}
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Learn React
-				</a>
 			</header>
 		</div>
 	);
