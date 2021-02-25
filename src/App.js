@@ -7,6 +7,13 @@ function App() {
 	// grab active tab URL
 	const [url, setUrl] = useState("");
 	const [width, setWidth] = useState(0);
+	const [screenshot, setScreenshot] = useState("");
+
+	function captureScreen() {
+		chrome.tabs.captureVisibleTab((dataUrl) => {
+			setScreenshot(dataUrl);
+		});
+	}
 
 	/**
 	 * Get current URL
@@ -37,6 +44,8 @@ function App() {
 				</p>
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
+				<button onClick={captureScreen}>Take Screenshot</button>
+				{screenshot && <img alt="screenshot" src={screenshot} />}
 				<a
 					className="App-link"
 					href="https://reactjs.org"
