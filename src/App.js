@@ -7,33 +7,37 @@ import axios from "axios";
 const proxy = "http://localhost:8080";
 
 function App() {
-	// grab active tab URL
 	const [url, setUrl] = useState("");
 	const [width, setWidth] = useState(0);
 	const [screenshot, setScreenshot] = useState("");
-	const [bugProblem, setBugProblem] = useState("");
+	const [summary, setSummary] = useState("");
+	const [description, setDescription] = useState("");
 	const [userEmail, setUserEmail] = useState("");
 	const [issueLink, setIssueLink] = useState("");
 
+	// Take screenshot
 	function captureScreen() {
 		chrome.tabs.captureVisibleTab((dataUrl) => {
 			setScreenshot(dataUrl);
 		});
 	}
 
+	// Submit ticket
 	async function handleSubmit() {
 		const response = await axios.post(`${proxy}/atlassian/new`, {
-			title: bugProblem,
+			summary: summary,
+			description: description,
+			url: url,
+			screenWidth: width,
 		});
 		setIssueLink(response.data.self);
 	}
 
-	/**
-	 * Get current URL
-	 */
+	// Get data about tab & window
 	useEffect(() => {
 		const queryInfo = { active: true, lastFocusedWindow: true };
 
+		// Get current URL
 		chrome.tabs &&
 			chrome.tabs.query(queryInfo, (tabs) => {
 				console.log(tabs);
@@ -41,6 +45,7 @@ function App() {
 				setUrl(url);
 			});
 
+		// Get window width
 		chrome.windows &&
 			chrome.windows.getLastFocused({}, (window) => {
 				console.log(window);
@@ -48,9 +53,10 @@ function App() {
 			});
 	}, []);
 
+	// Get user info from JIRA
 	useEffect(() => {
 		async function getUser() {
-			const _user = await axios.get("http://localhost:8080/atlassian/users");
+			const _user = await axios.get(`${proxy}/atlassian/user`);
 			console.log("getUser ran");
 			setUserEmail(_user.data.emailAddress);
 		}
@@ -63,14 +69,20 @@ function App() {
 				<img src={logo} className="App-logo" alt="logo" />
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
-				<p>Your JIRA email is {userEmail}</p>
+				<p>Testing issues as JIRA user {userEmail}</p>
 				<h2>Report a Bug</h2>
 				<form>
 					<input
-						id="bugProblem"
+						id="summary"
 						type="text"
-						value={bugProblem}
-						onChange={(ev) => setBugProblem(ev.target.value)}
+						value={summary}
+						onChange={(ev) => setSummary(ev.target.value)}
+					></input>
+					<input
+						id="description"
+						type="text"
+						value={description}
+						onChange={(ev) => setDescription(ev.target.value)}
 					></input>
 				</form>
 				<button onClick={handleSubmit}>Submit issue</button>
