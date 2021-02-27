@@ -2,6 +2,9 @@
 import { useState, useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
+import axios from "axios";
+
+const proxy = "http://localhost:8080";
 
 function App() {
 	// grab active tab URL
@@ -9,11 +12,20 @@ function App() {
 	const [width, setWidth] = useState(0);
 	const [screenshot, setScreenshot] = useState("");
 	const [bugProblem, setBugProblem] = useState("");
+	const [userEmail, setUserEmail] = useState("");
+	const [issueLink, setIssueLink] = useState("");
 
 	function captureScreen() {
 		chrome.tabs.captureVisibleTab((dataUrl) => {
 			setScreenshot(dataUrl);
 		});
+	}
+
+	async function handleSubmit() {
+		const response = await axios.post(`${proxy}/atlassian/new`, {
+			title: bugProblem,
+		});
+		setIssueLink(response.data.self);
 	}
 
 	/**
@@ -36,15 +48,24 @@ function App() {
 			});
 	}, []);
 
+	useEffect(() => {
+		async function getUser() {
+			const _user = await axios.get("http://localhost:8080/atlassian/users");
+			console.log("getUser ran");
+			setUserEmail(_user.data.emailAddress);
+		}
+		getUser();
+	});
+
 	return (
 		<div className="App">
 			<header className="App-header">
 				<img src={logo} className="App-logo" alt="logo" />
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
+				<p>Your JIRA email is {userEmail}</p>
 				<h2>Report a Bug</h2>
 				<form>
-					<label for="bugProblem">Describe problem:</label>
 					<input
 						id="bugProblem"
 						type="text"
@@ -52,7 +73,12 @@ function App() {
 						onChange={(ev) => setBugProblem(ev.target.value)}
 					></input>
 				</form>
-
+				<button onClick={handleSubmit}>Submit issue</button>
+				{issueLink && (
+					<p>
+						Go to issue: <a href={issueLink}>{issueLink}</a>
+					</p>
+				)}
 				<button onClick={captureScreen}>Take Screenshot</button>
 				{screenshot && (
 					<div>
