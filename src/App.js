@@ -30,7 +30,9 @@ function App() {
 			url: url,
 			screenWidth: width,
 		});
-		setIssueLink(response.data.self);
+		setIssueLink(
+			`https://visual-uat.atlassian.net/browse/${response.data.key}`
+		);
 	}
 
 	// Get data about tab & window
@@ -66,7 +68,7 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
+				<h1>Visual UAT for JIRA</h1>
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
 				<p>Testing issues as JIRA user {userEmail}</p>
