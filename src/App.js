@@ -1,6 +1,5 @@
 /*global chrome*/
 import { useState, useEffect } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 
@@ -30,6 +29,13 @@ function App() {
 			url: url,
 			screenWidth: width,
 		});
+
+		if (screenshot) {
+			await axios.post(`${proxy}/atlassian/attachment/${response.data.key}`, {
+				screenshot: screenshot,
+			});
+		}
+
 		setIssueLink(
 			`https://visual-uat.atlassian.net/browse/${response.data.key}`
 		);
