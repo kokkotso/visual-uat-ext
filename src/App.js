@@ -68,10 +68,12 @@ function App() {
 	return (
 		<div className="App">
 			<header className="App-header">
-				<h1>Visual UAT for JIRA</h1>
+				<div className="header">
+					<h1>Visual UAT for JIRA</h1>
+					<p>Testing issues as JIRA user {userEmail}</p>
+				</div>
 				<p>The current URL is: {url}</p>
 				<p>The window is {width}px wide</p>
-				<p>Testing issues as JIRA user {userEmail}</p>
 				<h2>Report a Bug</h2>
 				<form>
 					<input
